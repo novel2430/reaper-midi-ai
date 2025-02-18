@@ -1,4 +1,5 @@
 import socket
+import json
 
 # 音符编号到音符名称的映射
 NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
@@ -28,16 +29,19 @@ while True:
 
     while True:
         try:
-            data = client_socket.recv(1024).decode().strip()
+            # data = client_socket.recv(1024).decode().strip()
+            data = client_socket.recv(1024 * 64).decode().strip()  # 解码 JSON
             if not data:
                 print("客户端断开连接")
                 break
-
+            print(data)
+            #json_data = json.loads(data)
+            #print(json_data["type"])
             # 解析 MIDI 数据（逗号分隔的 MIDI 数字）
-            note_numbers = [int(n) for n in data.split(",") if n.isdigit()]
-            note_names = [note_number_to_name(n) for n in note_numbers]
+            # note_numbers = [int(n) for n in data.split(",") if n.isdigit()]
+            # note_names = [note_number_to_name(n) for n in note_numbers]
 
-            print("收到 MIDI 音符:", ", ".join(note_names))
+            # print("收到 MIDI 音符:", ", ".join(note_names))
 
             # 回复 Lua
             client_socket.sendall("received\n".encode())
